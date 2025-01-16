@@ -2,7 +2,7 @@ from typing import List
 from crewai import Agent
 from langchain_openai import ChatOpenAI
 from crewai_tools import SerperDevTool
-from tools.youtube_search_tools import YoutubeVideoSearchTool
+from tools.youtube_search_tool import YoutubeVideoSearchTool
 
 
 class CompanyResearchAgents():
