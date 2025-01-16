@@ -9,27 +9,24 @@ jobs: Dict[str, "Job"] = {}
 
 @dataclass
 class Event:
-    timestamp: str
+    timestamp: datetime
     data: str
 
 @dataclass
 class Job:
     status: str
-    events: list[Event]
+    events: List[Event]
     result: str
 
 def append_event(job_id: str, event_data: str):
     with jobs_lock:
-        if job_id in jobs:
-            print(f"Start job: {job_id}")
+        if job_id not in jobs:
+            logger.info("Job %s started", job_id)
             jobs[job_id] = Job(
-                status="STARTED",
+                status='STARTED',
                 events=[],
-                result=""
-            )
+                result='')
         else:
-            print("Appending Data")
-        jobs[job_id].events.append(Event(
-            timestamp=datetime.now(),
-            data=event_data
-        ))
+            logger.info("Appending event for job %s: %s", job_id, event_data)
+        jobs[job_id].events.append(
+            Event(timestamp=datetime.now(), data=event_data))
