@@ -1,5 +1,7 @@
 from job_manager import append_event
 from agents import CompanyResearchAgents
+from tasks import CompanyResearchTask
+from crewai import Crew
 
 class CompanyResearchCrew:
     def __init__(self, job_id: str):
@@ -10,6 +12,21 @@ class CompanyResearchCrew:
         agents = CompanyResearchAgents()
         research_manager = agents.research_manager(companies, positions)
         company_research_agent = agents.company_research_agent()
+
+        tasks = CompanyResearchTask()
+
+        company_research_task = [
+            tasks.company_research(company_research_agent, company, positions) for company in companies
+        ]
+
+        manage_research = tasks.manager_research(research_manager, companies, positions, company_research_task)
+
+        self.crew = Crew(
+            name="Company Research Crew",
+            agents=[research_manager, company_research_agent],
+            tasks=[*company_research_task, manage_research],
+            verbose=True
+        )
         return 
 
     def kickoff(self):
